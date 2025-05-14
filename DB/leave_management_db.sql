@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 14, 2025 at 11:00 PM
+-- Generation Time: May 14, 2025 at 11:23 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -97,18 +97,6 @@ CREATE TABLE `leave_requests` (
   `approved_by` int(11) DEFAULT NULL,
   `approved_by_name` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `leave_requests`
---
-
-INSERT INTO `leave_requests` (`id`, `user_id`, `start_date`, `end_date`, `reason`, `status`, `created_at`, `request_date`, `approver_id`, `approved_by`, `approved_by_name`) VALUES
-(22, 6, '2025-05-14', '2025-05-15', 'wew', 'approved', '2025-05-14 18:14:03', '2025-05-14 18:14:03', NULL, NULL, NULL),
-(23, 6, '2025-05-14', '2025-05-16', 'wew', 'approved', '2025-05-14 18:14:38', '2025-05-14 18:14:38', NULL, NULL, NULL),
-(24, 6, '2025-05-14', '2025-05-15', 'wew', 'approved', '2025-05-14 20:21:51', '2025-05-14 20:21:51', NULL, NULL, NULL),
-(25, 6, '2025-05-14', '2025-05-26', 'wew', 'approved', '2025-05-14 20:34:44', '2025-05-14 20:34:44', NULL, NULL, NULL),
-(26, 6, '2025-05-14', '2025-05-27', 'wew', 'approved', '2025-05-14 20:36:00', '2025-05-14 20:36:00', NULL, NULL, NULL),
-(27, 6, '2025-05-14', '2025-05-28', 'wew', 'approved', '2025-05-14 20:49:06', '2025-05-14 20:49:06', NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
