@@ -1,3 +1,4 @@
+/* Reset and Base Styling */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -6,7 +7,7 @@
 }
 
 body {
-    background-color: #f7f9fc;
+    background-color: #eef2f7;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -14,55 +15,63 @@ body {
     padding: 20px;
 }
 
-.login-container, .signup-container {
-    background-color: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    padding: 40px;
+/* Container Styling */
+.login-container,
+.signup-container {
+    border-radius: 16px;
+    padding: 48px 32px;
     width: 100%;
-    max-width: 450px;
+    max-width: 420px;
     text-align: center;
+    transition: all 0.3s ease;
 }
 
 h2 {
-    color: #2c3e50;
-    margin-bottom: 25px;
-    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 30px;
+    font-size: 26px;
+    font-weight: 700;
 }
 
-input[type="text"], 
-input[type="email"], 
+/* Input Fields */
+input[type="text"],
+input[type="email"],
 input[type="password"],
 select {
     width: 100%;
-    padding: 12px 15px;
-    margin-bottom: 20px;
-    border: 1px solid #e0e0e0;
-    border-radius: 5px;
-    font-size: 16px;
-    transition: border-color 0.3s ease;
+    padding: 14px 16px;
+    margin-bottom: 18px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 15px;
+    background-color: #f9fafb;
+    transition: all 0.3s ease;
 }
 
-input:focus, select:focus {
+input:focus,
+select:focus {
     outline: none;
-    border-color: #3498db;
-    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
 }
 
+/* Dropdown */
 select {
     appearance: none;
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
-    background-position: right 15px center;
-    background-size: 15px;
+    background-position: right 1rem center;
+    background-size: 16px;
+    padding-right: 2.5rem;
 }
 
+/* Button */
 button {
-    background-color: #3498db;
-    color: white;
+    background-color: #6366f1;
+    color: #fff;
     border: none;
-    border-radius: 5px;
-    padding: 12px 0;
+    border-radius: 8px;
+    padding: 14px 0;
     width: 100%;
     font-size: 16px;
     font-weight: 600;
@@ -71,74 +80,82 @@ button {
 }
 
 button:hover {
-    background-color: #2980b9;
+    background-color: #4f46e5;
+}
+
+/* Alerts */
+.error,
+.success {
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    text-align: left;
 }
 
 .error {
-    background-color: #ffebee;
-    color: #e53935;
-    padding: 10px;
-    border-radius: 5px;
-    margin-bottom: 20px;
+    background-color: #fee2e2;
+    color: #b91c1c;
+    border-left: 4px solid #ef4444;
 }
 
 .success {
-    background-color: #e8f5e9;
-    color: #43a047;
-    padding: 10px;
-    border-radius: 5px;
-    margin-bottom: 20px;
+    background-color: #dcfce7;
+    color: #15803d;
+    border-left: 4px solid #22c55e;
 }
 
+/* Links */
 a {
-    color: #3498db;
+    color: #6366f1;
     text-decoration: none;
+    font-weight: 500;
     transition: color 0.3s ease;
 }
 
 a:hover {
-    color: #2980b9;
+    color: #4f46e5;
     text-decoration: underline;
 }
 
-/* Responsive adjustments */
-@media (max-width: 480px) {
-    .login-container, .signup-container {
-        padding: 25px;
-    }
-    
-    input[type="text"], 
-    input[type="email"], 
-    input[type="password"],
-    select,
-    button {
-        padding: 10px;
-    }
-}
-
-/* Logo or branding */
+/* Branding */
 .system-logo {
     margin-bottom: 20px;
 }
 
 .system-logo img {
-    max-width: 180px;
+    max-width: 160px;
     height: auto;
 }
 
-/* Optional: Background pattern */
+/* Optional Background Pattern */
 .bg-pattern {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: linear-gradient(45deg, #f1f1f1 25%, transparent 25%), 
-                      linear-gradient(-45deg, #f1f1f1 25%, transparent 25%),
-                      linear-gradient(45deg, transparent 75%, #f1f1f1 75%),
-                      linear-gradient(-45deg, transparent 75%, #f1f1f1 75%);
-    background-size: 20px 20px;
-    background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
-    opacity: 0.3;
+    background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+    background-size: 24px 24px;
+    opacity: 0.2;
     z-index: -1;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+    .login-container,
+    .signup-container {
+        padding: 32px 20px;
+    }
+
+    input,
+    select,
+    button {
+        font-size: 14px;
+        padding: 12px;
+    }
+
+    h2 {
+        font-size: 22px;
+    }
 }
