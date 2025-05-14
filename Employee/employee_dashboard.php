@@ -51,7 +51,6 @@ $leave_request_query = "SELECT * FROM leave_requests WHERE user_id = ? ORDER BY 
 $stmt = $conn->prepare($leave_request_query);
 
 if ($stmt === false) {
-    // Output the error if prepare fails
     die("Error preparing the SQL statement for leave requests: " . $conn->error);
 }
 
@@ -59,28 +58,31 @@ $stmt->bind_param("i", $_SESSION['user_id']);
 $stmt->execute();
 $leave_result = $stmt->get_result();
 
-// Fetch latest leave status
-// $latest_leave = $leave_result->fetch_assoc();
-// if ($latest_leave) {
-//     $status_message = "Your leave request is currently: " . $latest_leave['status'];
-//     if ($latest_leave['status'] === 'approved') {
-//         $_SESSION['leave_notification'] = "Your leave request has been approved! " . $status_message;
-//     } elseif ($latest_leave['status'] === 'declined') {
-//         $_SESSION['leave_notification'] = "Your leave request has been declined. " . $status_message;
-//     }
-// }
-
-// Initialize the viewed notifications session variable if it doesn't exist
+// Mark notifications as viewed if requested
 if (!isset($_SESSION['viewed_notifications'])) {
     $_SESSION['viewed_notifications'] = false;
 }
-
-// Mark notifications as viewed if requested
 if (isset($_GET['mark_viewed']) && $_GET['mark_viewed'] == 1) {
     $_SESSION['viewed_notifications'] = true;
-    // Redirect to remove the query parameter
     header("Location: " . strtok($_SERVER["REQUEST_URI"], '?'));
     exit();
+}
+
+// Auto-mark notifications as viewed if the user has seen the dropdown
+if (!$_SESSION['viewed_notifications']) {
+    $status_query = "SELECT status FROM leave_requests WHERE user_id = ? AND (status = 'approved' OR status = 'declined')";
+    $stmt = $conn->prepare($status_query);
+    if ($stmt) {
+        $stmt->bind_param("i", $_SESSION['user_id']);
+        $stmt->execute();
+        $status_result = $stmt->get_result();
+        while ($row = $status_result->fetch_assoc()) {
+            if ($row['status'] === 'approved' || $row['status'] === 'declined') {
+                $_SESSION['leave_notification'] = "Your leave request has been " . $row['status'] . ".";
+                break;
+            }
+        }
+    }
 }
 ?>
 <!DOCTYPE html>
@@ -94,12 +96,18 @@ if (isset($_GET['mark_viewed']) && $_GET['mark_viewed'] == 1) {
 </head>
 <body class="bg-gray-50 min-h-screen">
     <!-- Navigation -->
-    <nav class="bg-blue-600 shadow-lg">
+<nav class="bg-blue-600 shadow-lg">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
             <!-- Logo / Title -->
             <div class="flex items-center">
                 <span class="text-white text-xl font-bold">Company Portal</span>
+            </div>
+
+            <!-- Navigation Links -->
+            <div class="hidden md:flex space-x-8 items-center">
+                <a href="employee_dashboard.php" class="bg-blue-700 text-white px-3 py-2 rounded-md text-sm font-medium">Dashboard</a>
+                <a href="employee_profile.php" class="text-gray-100 hover:text-white px-3 py-2 rounded-md text-sm font-medium">My Profile</a>
             </div>
 
             <!-- Right Side: Welcome, Notification, Logout -->
@@ -199,7 +207,7 @@ if (isset($_GET['mark_viewed']) && $_GET['mark_viewed'] == 1) {
             </div>
         </div>
     </div>
-    </nav>
+</nav>
 
     <!-- Main Content -->
     <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">

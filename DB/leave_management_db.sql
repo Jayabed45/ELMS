@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 14, 2025 at 07:54 PM
+-- Generation Time: May 14, 2025 at 11:00 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -92,25 +92,23 @@ CREATE TABLE `leave_requests` (
   `reason` text DEFAULT NULL,
   `status` enum('pending','approved','declined') DEFAULT 'pending',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `request_date` timestamp NOT NULL DEFAULT current_timestamp()
+  `request_date` timestamp NOT NULL DEFAULT current_timestamp(),
+  `approver_id` int(11) DEFAULT NULL,
+  `approved_by` int(11) DEFAULT NULL,
+  `approved_by_name` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `leave_requests`
 --
 
-INSERT INTO `leave_requests` (`id`, `user_id`, `start_date`, `end_date`, `reason`, `status`, `created_at`, `request_date`) VALUES
-(1, 3, '2025-05-20', '2025-05-24', 'ge kalibana ko sir', 'declined', '2025-05-13 18:31:07', '2025-05-13 18:41:25'),
-(2, 3, '2025-05-02', '2025-05-13', 'Ge kalibang ko sir\r\n', 'approved', '2025-05-13 18:44:42', '2025-05-13 18:44:42'),
-(3, 3, '2025-05-13', '2025-05-27', '12', 'approved', '2025-05-13 18:52:52', '2025-05-13 18:52:52'),
-(4, 3, '2025-05-13', '2025-05-20', 'sir', 'declined', '2025-05-13 19:06:15', '2025-05-13 19:06:15'),
-(5, 3, '2025-05-13', '2025-05-20', 'sir', 'declined', '2025-05-13 19:06:27', '2025-05-13 19:06:27'),
-(6, 3, '2025-05-13', '2025-05-20', '123', 'declined', '2025-05-13 19:06:35', '2025-05-13 19:06:35'),
-(7, 3, '2025-05-13', '2025-05-20', 'wew', 'approved', '2025-05-13 19:07:05', '2025-05-13 19:07:05'),
-(8, 3, '2025-05-13', '2025-05-20', 'Sir Malibang ko', 'approved', '2025-05-13 19:09:19', '2025-05-13 19:09:19'),
-(9, 3, '2025-05-13', '2025-05-20', 'Kalibangon', 'declined', '2025-05-13 19:40:27', '2025-05-13 19:40:27'),
-(10, 3, '2025-05-13', '2025-05-14', 'wew', 'declined', '2025-05-13 20:15:05', '2025-05-13 20:15:05'),
-(11, 6, '2025-05-14', '2025-05-27', 'Malibang\r\n', 'approved', '2025-05-14 17:51:35', '2025-05-14 17:51:35');
+INSERT INTO `leave_requests` (`id`, `user_id`, `start_date`, `end_date`, `reason`, `status`, `created_at`, `request_date`, `approver_id`, `approved_by`, `approved_by_name`) VALUES
+(22, 6, '2025-05-14', '2025-05-15', 'wew', 'approved', '2025-05-14 18:14:03', '2025-05-14 18:14:03', NULL, NULL, NULL),
+(23, 6, '2025-05-14', '2025-05-16', 'wew', 'approved', '2025-05-14 18:14:38', '2025-05-14 18:14:38', NULL, NULL, NULL),
+(24, 6, '2025-05-14', '2025-05-15', 'wew', 'approved', '2025-05-14 20:21:51', '2025-05-14 20:21:51', NULL, NULL, NULL),
+(25, 6, '2025-05-14', '2025-05-26', 'wew', 'approved', '2025-05-14 20:34:44', '2025-05-14 20:34:44', NULL, NULL, NULL),
+(26, 6, '2025-05-14', '2025-05-27', 'wew', 'approved', '2025-05-14 20:36:00', '2025-05-14 20:36:00', NULL, NULL, NULL),
+(27, 6, '2025-05-14', '2025-05-28', 'wew', 'approved', '2025-05-14 20:49:06', '2025-05-14 20:49:06', NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -146,10 +144,9 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `password`, `role`, `created_at`) VALUES
-(3, 'Employee Office', 'employee@gmail.com', '$2y$10$sbq4K5aZ/WUF6YxhVoRVa.YK8k6Ev7e5HPt3lArwDeCVDDxNmWbr2', 'employee', '2025-05-11 18:36:49'),
 (4, 'Admin Offices', 'admin@gamil.com', '$2y$10$qDES7Y4IdQCdAxzplyEbC.knkNM9ztaGbL6K2Bu6r/MmOAVAsB2gO', 'admin', '2025-05-11 18:39:47'),
 (5, 'Head Offices', 'head@gmail.com', '$2y$10$2j7elnwIJ.Gg1CXbV2hD6ehnVfyz5n97M76dWC2Ql24s77V5Izyz.', 'head_office', '2025-05-13 18:20:41'),
-(6, 'Jane', 'jane@gamil.com', '$2y$10$sanpH1FGo9Ste0BcYs7zGeZ/miDKzdRf8XDjZas9BKsP9Qaz7Wd0K', 'employee', '2025-05-14 17:46:42');
+(6, 'Jane', 'jane@gmail.com', '$2y$10$yXDt0sVftnVD41m8GgOc/u0Hf3ZwFb1K0pA8x.fiD0WxLjJtFaGyC', 'employee', '2025-05-14 17:46:42');
 
 --
 -- Indexes for dumped tables
@@ -190,7 +187,8 @@ ALTER TABLE `leave_forms`
 --
 ALTER TABLE `leave_requests`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `user_id` (`user_id`);
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `leave_requests_ibfk_2` (`approver_id`);
 
 --
 -- Indexes for table `notifications`
@@ -238,7 +236,7 @@ ALTER TABLE `leave_forms`
 -- AUTO_INCREMENT for table `leave_requests`
 --
 ALTER TABLE `leave_requests`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT for table `notifications`
@@ -286,7 +284,8 @@ ALTER TABLE `leave_forms`
 -- Constraints for table `leave_requests`
 --
 ALTER TABLE `leave_requests`
-  ADD CONSTRAINT `leave_requests_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `leave_requests_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `leave_requests_ibfk_2` FOREIGN KEY (`approver_id`) REFERENCES `users` (`id`) ON DELETE SET NULL;
 
 --
 -- Constraints for table `notifications`
