@@ -47,7 +47,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 
 // Check if there are any leave requests and their status
-$leave_request_query = "SELECT * FROM leave_requests WHERE user_id = ? ORDER BY request_date DESC";
+// Updated query to join with users table to get approver information
+$leave_request_query = "SELECT lr.*, 
+                        u.name as approver_name, 
+                        u.role as approver_role
+                        FROM leave_requests lr
+                        LEFT JOIN users u ON lr.approver_id = u.id
+                        WHERE lr.user_id = ? 
+                        ORDER BY lr.request_date DESC";
 $stmt = $conn->prepare($leave_request_query);
 
 if ($stmt === false) {
@@ -156,9 +163,12 @@ if (!$_SESSION['viewed_notifications']) {
                         </div>
                         
                         <?php
-                        // Fetch leave requests with their status
-                        $leave_requests_query = "SELECT id, start_date, end_date, status, request_date FROM leave_requests 
-                                              WHERE user_id = ? ORDER BY request_date DESC LIMIT 5";
+                        // Fetch leave requests with their status and approver info
+                        $leave_requests_query = "SELECT lr.id, lr.start_date, lr.end_date, lr.status, lr.request_date,
+                                              u.name as approver_name, u.role as approver_role
+                                              FROM leave_requests lr
+                                              LEFT JOIN users u ON lr.approver_id = u.id
+                                              WHERE lr.user_id = ? ORDER BY lr.request_date DESC LIMIT 5";
                         $stmt = $conn->prepare($leave_requests_query);
                         if ($stmt) {
                             $stmt->bind_param("i", $_SESSION['user_id']);
@@ -171,11 +181,20 @@ if (!$_SESSION['viewed_notifications']) {
                                     $end = date('M d, Y', strtotime($request['end_date']));
                                     $status_class = $request['status'] === 'approved' ? 'text-green-600' : 
                                                 ($request['status'] === 'declined' ? 'text-red-600' : 'text-yellow-600');
+                                    
+                                    // Get approver information if available
+                                    $approver_info = '';
+                                    if ($request['status'] === 'approved' || $request['status'] === 'declined') {
+                                        if (!empty($request['approver_name'])) {
+                                            $role_display = $request['approver_role'] === 'admin' ? 'Admin' : 'Head Office';
+                                            $approver_info = " by {$request['approver_name']} ({$role_display})";
+                                        }
+                                    }
                         ?>
                             <div class="px-4 py-3 border-b border-gray-200 hover:bg-gray-50">
                                 <p class="text-sm text-gray-700">
                                     Your leave request for <span class="font-semibold"><?= $start ?></span> to <span class="font-semibold"><?= $end ?></span> has been 
-                                    <span class="font-bold <?= $status_class ?>"><?= $request['status'] ?></span>
+                                    <span class="font-bold <?= $status_class ?>"><?= $request['status'] . $approver_info ?></span>
                                 </p>
                                 <p class="text-xs text-gray-500 mt-1">
                                     <?= date('F j, Y g:i a', strtotime($request['request_date'])) ?>
@@ -248,6 +267,7 @@ if (!$_SESSION['viewed_notifications']) {
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">End Date</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Reason</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Approved By</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Requested On</th>
                             </tr>
                         </thead>
@@ -266,6 +286,13 @@ if (!$_SESSION['viewed_notifications']) {
                                     } else {
                                         $status_color = 'bg-yellow-100 text-yellow-800';
                                     }
+                                    
+                                    // Format approver information
+                                    $approver_display = '-';
+                                    if (($row['status'] === 'approved' || $row['status'] === 'declined') && !empty($row['approver_name'])) {
+                                        $role_display = $row['approver_role'] === 'admin' ? 'Admin' : 'Head Office';
+                                        $approver_display = $row['approver_name'] . ' (' . $role_display . ')';
+                                    }
                             ?>
                                 <tr>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"><?= date('M d, Y', strtotime($row['start_date'])) ?></td>
@@ -276,6 +303,7 @@ if (!$_SESSION['viewed_notifications']) {
                                             <?= ucfirst($row['status']) ?>
                                         </span>
                                     </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"><?= $approver_display ?></td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><?= date('M d, Y', strtotime($row['request_date'])) ?></td>
                                 </tr>
                             <?php
@@ -283,7 +311,7 @@ if (!$_SESSION['viewed_notifications']) {
                             } else {
                             ?>
                                 <tr>
-                                    <td colspan="5" class="px-6 py-4 text-sm text-center text-gray-500">No leave requests found</td>
+                                    <td colspan="6" class="px-6 py-4 text-sm text-center text-gray-500">No leave requests found</td>
                                 </tr>
                             <?php } ?>
                         </tbody>
@@ -333,6 +361,34 @@ if (!$_SESSION['viewed_notifications']) {
     </div>
 
     <!-- JavaScript for Notification Toggle -->
-    <script src="assets/js/notification.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const notificationBtn = document.getElementById('notificationBtn');
+        const notificationPanel = document.getElementById('notificationPanel');
+        const notificationBadge = document.getElementById('notificationBadge');
+        
+        // Toggle notification panel
+        notificationBtn.addEventListener('click', function() {
+            notificationPanel.classList.toggle('hidden');
+            
+            // If we're showing the panel, hide the badge
+            if (!notificationPanel.classList.contains('hidden') && notificationBadge) {
+                notificationBadge.classList.add('hidden');
+                
+                // Send AJAX request to mark as viewed
+                fetch('employee_dashboard.php?mark_viewed=1', {
+                    method: 'GET',
+                });
+            }
+        });
+        
+        // Close the panel when clicking elsewhere
+        document.addEventListener('click', function(event) {
+            if (!notificationBtn.contains(event.target) && !notificationPanel.contains(event.target)) {
+                notificationPanel.classList.add('hidden');
+            }
+        });
+    });
+    </script>
 </body>
 </html>

@@ -59,15 +59,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_profile'])) {
     }
 }
 
-// Handle approval or decline
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['leave_id'], $_POST['action'])) {
     $leave_id = intval($_POST['leave_id']);
     $action = $_POST['action'] === 'approve' ? 'approved' : 'declined';
+    $admin_id = $_SESSION['user_id']; // Get the current admin user ID
 
-    // Update the status of the leave request
-    $stmt = $conn->prepare("UPDATE leave_requests SET status = ? WHERE id = ?");
-    $stmt->bind_param("si", $action, $leave_id);
-    $stmt->execute();
+    // Update the status of the leave request AND store the approver ID
+    $stmt = $conn->prepare("UPDATE leave_requests SET status = ?, approver_id = ? WHERE id = ?");
+    $stmt->bind_param("sii", $action, $admin_id, $leave_id);
+    
+    if ($stmt->execute()) {
+        $success_message = "Leave request successfully " . $action . ".";
+    } else {
+        $error_message = "Failed to update leave request: " . $conn->error;
+    }
 }
 
 // Fetch current user's data

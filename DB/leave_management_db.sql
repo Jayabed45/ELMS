@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 14, 2025 at 11:23 PM
+-- Generation Time: May 16, 2025 at 07:57 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -98,6 +98,15 @@ CREATE TABLE `leave_requests` (
   `approved_by_name` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `leave_requests`
+--
+
+INSERT INTO `leave_requests` (`id`, `user_id`, `start_date`, `end_date`, `reason`, `status`, `created_at`, `request_date`, `approver_id`, `approved_by`, `approved_by_name`) VALUES
+(28, 6, '2025-05-14', '2025-05-25', 'sir\r\n', 'approved', '2025-05-15 01:03:58', '2025-05-15 01:03:58', NULL, NULL, NULL),
+(29, 6, '2025-05-14', '2025-05-21', 'wew', 'approved', '2025-05-15 02:35:41', '2025-05-15 02:35:41', NULL, NULL, NULL),
+(34, 6, '2025-05-16', '2025-05-21', 'wew', 'approved', '2025-05-16 17:54:58', '2025-05-16 17:54:58', NULL, NULL, NULL);
+
 -- --------------------------------------------------------
 
 --
@@ -134,7 +143,8 @@ CREATE TABLE `users` (
 INSERT INTO `users` (`id`, `name`, `email`, `password`, `role`, `created_at`) VALUES
 (4, 'Admin Offices', 'admin@gamil.com', '$2y$10$qDES7Y4IdQCdAxzplyEbC.knkNM9ztaGbL6K2Bu6r/MmOAVAsB2gO', 'admin', '2025-05-11 18:39:47'),
 (5, 'Head Offices', 'head@gmail.com', '$2y$10$2j7elnwIJ.Gg1CXbV2hD6ehnVfyz5n97M76dWC2Ql24s77V5Izyz.', 'head_office', '2025-05-13 18:20:41'),
-(6, 'Jane', 'jane@gmail.com', '$2y$10$yXDt0sVftnVD41m8GgOc/u0Hf3ZwFb1K0pA8x.fiD0WxLjJtFaGyC', 'employee', '2025-05-14 17:46:42');
+(6, 'Jane', 'jane@gmail.com', '$2y$10$yXDt0sVftnVD41m8GgOc/u0Hf3ZwFb1K0pA8x.fiD0WxLjJtFaGyC', 'employee', '2025-05-14 17:46:42'),
+(7, 'admin2', 'admin2@gamil.com', '$2y$10$xwhLFXIxL7BrTQ5nDxAr/OBK8azl9MR7GHWqRuqi6gTMBoneh4Hb6', 'admin', '2025-05-15 02:28:43');
 
 --
 -- Indexes for dumped tables
@@ -224,7 +234,7 @@ ALTER TABLE `leave_forms`
 -- AUTO_INCREMENT for table `leave_requests`
 --
 ALTER TABLE `leave_requests`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- AUTO_INCREMENT for table `notifications`
@@ -236,7 +246,7 @@ ALTER TABLE `notifications`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- Constraints for dumped tables
